@@ -76,7 +76,7 @@ function Todo(props) {
       <List className="todo__list">
         <ListItem>
           <ListItemAvatar></ListItemAvatar>
-          <ListItemText primary={props.todo.todo} secondary="Uploaded Task 🤞 "    />
+          <ListItemText primary={props.todo.todo} secondary="Uncompleted Task "    />
         </ListItem>
         <Button
           variant="contained"

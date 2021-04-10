@@ -44,7 +44,7 @@ function App() {
         <FormControl>
           <InputLabel><span role="img" aria-label="emoji">✅ </span> Write a Task</InputLabel>
           <Input value={input} onChange={Event => setInput(Event.target.value)} />
-          <FormHelperText>We'll make you productive <span role="img" aria-label="emoji">🕒</span> </FormHelperText>
+          <FormHelperText>make yourself more productive <span role="img" aria-label="emoji">🕒</span> </FormHelperText>
         </FormControl>
 
         {/* using material ui */}
