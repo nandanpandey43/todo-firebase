@@ -10,16 +10,15 @@ function App() {
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState("")
 
-  // when the app loads, we need to listen to database and then we get some data using fetch, 
+  
   useEffect(() => {
-  //this code fires when app.js loaded
+  
   db.collection('todos').orderBy("timestamp", "desc").onSnapshot(snapshot => {
-    // console.log(snapshot.docs.map(doc => doc.data().todos))
-    // console.log(snapshot.docs.map(doc => doc.data()))
+    
     setTodos(snapshot.docs.map(doc => ({ id:doc.id, todo: doc.data().todo})))
   })}, [])
 
-  // Function on button add TODo
+  
   const addTodo = (Event) => {
     // preventing default nature of form of refresh
     Event.preventDefault();
