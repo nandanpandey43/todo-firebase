@@ -4,18 +4,30 @@ import { Button, FormControl, InputLabel, Input, FormHelperText } from '@materia
 import Todo from './Todo';
 import {db} from './firebase';
 import firebase from "firebase"
+import { useHistory } from 'react-router-dom';
+import { Alert } from 'react-bootstrap'
+import { useAuth } from './contexts/AuthContext';
+
 
 
 function App() {
   const [todos, setTodos] = useState([])
   const [input, setInput] = useState("")
+  const [error, setError] = useState('');
+  const history = useHistory();
+  const { logout } = useAuth();
+  const [pending, setPending] = useState(true);
 
-  
+
   useEffect(() => {
   
   db.collection('todos').orderBy("timestamp", "desc").onSnapshot(snapshot => {
     
-    setTodos(snapshot.docs.map(doc => ({ id:doc.id, todo: doc.data().todo})))
+    setTodos(snapshot.docs.map(doc => ({ 
+      id:doc.id, 
+      todo: doc.data().todo,
+      pending: doc.data().pending
+    })))
   })}, [])
 
   
@@ -25,12 +37,29 @@ function App() {
     
     db.collection('todos').add({
       todo: input,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+      pending: pending
     })
 
     // to remove the entered words from input after clicking button
     setInput("");
+    setPending(true);
   }
+
+
+  async function logOut(){
+    try{
+      setError("");
+      // setLoading(true);
+      await logout();
+      // console.log( emailRef.current.value, passwordRef.current.value )
+      history.push('/login');
+    } catch{
+      setError('failed to log out')
+    }
+  }
+
+  // console.log(pending);
 
 
 
@@ -54,9 +83,16 @@ function App() {
       </form>
       <ul>
         {todos.map(todo => (
-         <Todo todo={todo} />
+         <Todo todo={todo} setPending={setPending} />
         ))}
       </ul>
+
+      <div className="log-out" onClick={logout} >
+            {error && <Alert variant="danger">{error}</Alert>}
+            <Button color="secondary" onClick={logOut} > Log Out </Button>
+      </div>
+
+
     </div>
   );
 }

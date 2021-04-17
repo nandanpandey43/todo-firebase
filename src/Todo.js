@@ -14,6 +14,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from '@material-ui/icons/Edit';
 
+
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     position: "relative",
@@ -34,9 +36,17 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Todo(props) {
+
+
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [input, setInput] = useState();
+  const [taskDetail, settaskDetail] = useState('Task Pending');
+  const [toggle, setToggle] = useState(false);
+  // const [line, setLine] = useState('');
+  // const { logout } = useAuth();
+
+  
 
   const handleOpen = () => {
     setOpen(true);
@@ -52,6 +62,49 @@ function Todo(props) {
     );
     setOpen(false);
   };
+
+  // if(props.todo.pending){
+  //   settaskDetail("Task Pending");
+  //   setToggle(false);
+  // }
+  // else{
+  //   settaskDetail("Task Completed");
+  //   setToggle(true);
+  // }
+
+  function taskDoneToggle(){
+
+    console.log(props.todo.pending);
+
+    if(toggle){
+      db.collection("todos").doc(props.todo.id).set(
+        {
+          pending: true,
+        },
+        { merge: true }
+      );
+      settaskDetail("Task Pending");
+      setToggle(false);
+      props.setPending(true);
+      // setLine('');
+    }
+    else{
+
+      db.collection("todos").doc(props.todo.id).set(
+        {
+          pending: false,
+        },
+        { merge: true }
+      );
+      settaskDetail("Task Completed");
+      setToggle(true);
+      props.setPending(false);
+      // setLine("line-through");
+    }
+    
+  }
+
+
 
   return (
     <>
@@ -76,7 +129,14 @@ function Todo(props) {
       <List className="todo__list">
         <ListItem>
           <ListItemAvatar></ListItemAvatar>
-          <ListItemText primary={props.todo.todo} secondary="Uncompleted Task "    />
+          {/* <h3>{props.todo.todo}</h3>
+          <p> {taskDetail} </p> */}
+
+          <ListItemText primary={props.todo.todo} secondary={taskDetail}
+          style={{cursor:"pointer"}} onClick={taskDoneToggle}  />
+
+{/* , textDecoration:`${line}`  */}
+          
         </ListItem>
         <Button
           variant="contained"
@@ -103,6 +163,8 @@ function Todo(props) {
         {/* <Button className="edit__btn" onClick={e => setOpen(true)}>Edit</Button> */}
         {/* <DeleteForeverIcon onClick={Event =>db.collection('todos').doc(props.todo.id).delete()}>❌Delete</DeleteForeverIcon> */}
       </List>
+          
+
     </>
   );
 }
